@@ -81,6 +81,9 @@ import audioHelper from '../../main/libs/audioHelper.js';
       openSettings(){
         this.$electron.remote.getCurrentWindow().toggleDevTools();
       },
+      pasteData(){
+        document.execCommand('paste');
+      },
       download(){
         
         ytHelper.getInfo(this.url).then((info) => {
@@ -148,7 +151,8 @@ import audioHelper from '../../main/libs/audioHelper.js';
       <div class="title noselect">YT.Downloader</div>
     </header>
     <div class="form-area">
-      <input type="text" name="" v-model="url" class="url" placeholder="Paste Link">
+      <input type="text" name="" v-model="url" class="url" placeholder="Paste Link" 
+      @contextmenu.prevent="$refs.ctxMenuPaste.open($event)"/>
       <div class="button-area">
         <a class="btn fast-download" @click="download" title="Fast Download & Convert"><font-awesome-icon icon="angle-double-down" /></a>
         <a class="btn download" title="Download"><font-awesome-icon icon="download" /></a>
@@ -200,6 +204,11 @@ import audioHelper from '../../main/libs/audioHelper.js';
         <li @click="removeDisk(menuData)">Remove From Disk</li>
       </context-menu>
 
+      <context-menu id="context-menu-paste" class="noselect" ref="ctxMenuPaste"
+       >
+        <li @click="pasteData">Paste <small>(CTRL + V)</small></li>
+      </context-menu>
+
     </section>
     <music-player :info="mPlayerInfo"/>
   </div>
@@ -208,7 +217,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
 <style lang="scss">
   #wrapper{position: relative;height: 100%;}
 
-  #context-menu{
+  #context-menu, #context-menu-paste{
     li{
       cursor: pointer;
       height: 20px;
