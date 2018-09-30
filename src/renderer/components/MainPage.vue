@@ -105,6 +105,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
 
           let itemIndex=this.list.length - 1;
           ytHelper.download(this.url,output).then((res) =>{
+            this.$eNotify.notify({ title: this.$eNotify.messages.getLocale('START_DOWNLOAD'), text: info.title });
             this.list[itemIndex].progressShow=true;
             let totalSize = res.headers['content-length'];
             let dataRead = 0;
@@ -116,7 +117,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
             });
             res.on('end', function() {
               self.list[itemIndex].progressShow = false;
-
+              self.$eNotify.notify({ title: self.$eNotify.messages.getLocale('START_CONVERT'), text: info.title });
               self.list[itemIndex].progressShow=true;
               let proc = new ffmpeg({source:output});
 
@@ -132,6 +133,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
                 self.list[itemIndex].progressPercent = progress.percent.toFixed(2);
               })
               .on('end', () => {
+                self.$eNotify.notify({ title: self.$eNotify.messages.getLocale('COMPLETE_CONVERT'), text: info.title });
                 self.list[itemIndex].progressShow=false;
                 fs.unlinkSync(output);
               });
@@ -204,8 +206,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
         <li @click="removeDisk(menuData)">Remove From Disk</li>
       </context-menu>
 
-      <context-menu id="context-menu-paste" class="noselect" ref="ctxMenuPaste"
-       >
+      <context-menu id="context-menu-paste" class="noselect" ref="ctxMenuPaste">
         <li @click="pasteData">Paste <small>(CTRL + V)</small></li>
       </context-menu>
 

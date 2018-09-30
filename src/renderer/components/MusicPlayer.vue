@@ -59,6 +59,7 @@ export default {
       this.sliderMaxTime=this.totalTime;
     };
     audioHelper.audio.onplay=() => {
+      this.$eNotify.notify({ title: this.$eNotify.messages.getLocale('PLAY_MUSIC'), text: this.getTitle() });
       this.playIcon='pause';
       this.playStatus = 1;
     };
@@ -93,6 +94,7 @@ export default {
         
       } else {
         audioHelper.audio.pause();
+        this.$eNotify.notify({ title: this.$eNotify.messages.getLocale('PAUSE_MUSIC'), text: this.getTitle() });
       }
     },
     setMute(){
@@ -101,9 +103,11 @@ export default {
       if(this.muteStatus) {
         this.muteIcon = 'volume-off';
         audioHelper.audio.muted=true;
+        this.$eNotify.notify({ title: this.$eNotify.messages.getLocale('MUTE_MUSIC'), text: this.getTitle() });
       } else {
         this.muteIcon = 'volume-up';
         audioHelper.audio.muted=false;
+        this.$eNotify.notify({ title: this.$eNotify.messages.getLocale('UNMUTE_MUSIC'), text: this.getTitle() });
       }
     },
     setPlayerListAndPlay(){
