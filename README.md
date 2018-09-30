@@ -2,6 +2,28 @@
 
 > Youtube Video Downloader&Converter and Play Music
 
+![YT.Downloader](build/icons/256x256.png)
+
+
+Fast Download and Convert to mp3.
+Background: Electron and Vue
+## Screenshot
+
+![YT.Downloader](build/images/YT.Downloader.png)
+
+## Next Version
+
+* Context Menu Paste
+* Detailed Download (Quality, Media Type [Video,Voice,Subtitle])
+* Detailed Converter
+* Fast Download Default Settings
+* Run Background&Tray
+* Notification
+* Playlist Download
+* Shuffle, Repeat for Music Player
+* Multi Language Support
+* MP3 file add meta info
+
 #### Build Setup
 
 ``` bash
