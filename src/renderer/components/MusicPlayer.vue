@@ -322,6 +322,9 @@ export default {
             float: left;
             line-height: $item-height;
             padding-left: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
 
           #itemTime{
