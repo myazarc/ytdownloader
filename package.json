@@ -1,6 +1,6 @@
 {
-  "name": "YT.Downloader",
-  "version": "1.0.0",
+  "name": "ytdownloader",
+  "version": "2.0.0-alpha",
   "author": "Mustafa Yazar <myazarc@gmail.com>",
   "description": "Youtube Video Downloader&Converter and Play Music",
   "license": "MIT",

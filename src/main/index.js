@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron' // eslint-disable-line
+import { app, BrowserWindow, globalShortcut } from 'electron' // eslint-disable-line
 
 /**
  * Set `__static` path to static files in production
@@ -27,6 +27,31 @@ function createWindow () {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+
+  globalShortcut.register('VolumeUp', () => {
+    mainWindow.webContents.send('mp-volume-up');
+  })
+
+  globalShortcut.register('VolumeDown', () => {
+    mainWindow.webContents.send('mp-volume-down');
+  })
+
+  globalShortcut.register('VolumeMute', () => {
+    mainWindow.webContents.send('mp-volume-mute');
+  })
+
+  globalShortcut.register('MediaNextTrack', () => {
+    mainWindow.webContents.send('mp-media-next');
+  })
+
+  globalShortcut.register('MediaPreviousTrack', () => {
+    mainWindow.webContents.send('mp-media-prev');
+  })
+
+  globalShortcut.register('MediaPlayPause', () => {
+    mainWindow.webContents.send('mp-play-pause');
   })
 }
 

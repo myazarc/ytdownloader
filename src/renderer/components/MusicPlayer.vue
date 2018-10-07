@@ -70,6 +70,30 @@ export default {
     const lastVol=localStorage.getItem('mplayer-vol') || audioHelper.audio.volume;
     audioHelper.audio.volume=lastVol;
     this.sliderAudioVal=lastVol * 100;
+
+    this.$electron.ipcRenderer.on('mp-volume-up', () => {
+      this.setVolumeUp();
+    });
+
+    this.$electron.ipcRenderer.on('mp-volume-down', () => {
+      this.setVolumeDown();
+    });
+
+    this.$electron.ipcRenderer.on('mp-volume-mute', () => {
+      this.setMute();
+    });
+
+    this.$electron.ipcRenderer.on('mp-media-next', () => {
+      this.setNextMusic();
+    });
+
+    this.$electron.ipcRenderer.on('mp-media-prev', () => {
+      this.setPrevMusic();
+    });
+
+    this.$electron.ipcRenderer.on('mp-play-pause', () => {
+      this.setPlayPause();
+    });
   },
   watch:{
     info() {
@@ -83,6 +107,46 @@ export default {
     setCurrentVolume(vol){
       audioHelper.audio.volume=vol/100;
       localStorage.setItem('mplayer-vol',vol/100);
+    },
+    setVolumeDown(){
+      if(0>audioHelper.audio.volume && audioHelper.audio.volume<=0.2){
+        audioHelper.audio.volume=0;
+        localStorage.setItem('mplayer-vol',0);
+      }else if(audioHelper.audio.volume>0.2){
+        audioHelper.audio.volume-=0.2;
+        localStorage.setItem('mplayer-vol',audioHelper.audio.volume);
+      }
+          this.sliderAudioVal=audioHelper.audio.volume * 100;
+
+    },
+    setVolumeUp(){
+      if(audioHelper.audio.volume>=0.8 && audioHelper.audio.volume<1){
+        audioHelper.audio.volume=1;
+        localStorage.setItem('mplayer-vol',1);
+      }else if(audioHelper.audio.volume<0.8){
+        audioHelper.audio.volume+=0.2;
+        localStorage.setItem('mplayer-vol',audioHelper.audio.volume);
+      }
+      this.sliderAudioVal=audioHelper.audio.volume * 100;
+
+    },
+    setNextMusic(){
+      if(!this.playList.length) return;
+      if(this.playListIndex < this.playList.length && this.playListIndex != this.playList.length-1){
+        this.playListIndex++;
+      }else {
+        this.playListIndex = 0; 
+      }
+      audioHelper.playOne(this.playList[this.playListIndex].fullPath);
+    },
+    setPrevMusic(){
+      if(!this.playList.length) return;
+      if(this.playListIndex > 0 && this.playListIndex != this.playList.length-1){
+        this.playListIndex--;
+      }else {
+        this.playListIndex = this.playList.length - 1; 
+      }
+      audioHelper.playOne(this.playList[this.playListIndex].fullPath);
     },
     setPlayPause(){
       if(this.playStatus == 0) {
