@@ -143,7 +143,9 @@ export default {
       if(!this.playList.length) return;
       if(this.playListIndex > 0 && this.playListIndex != this.playList.length-1){
         this.playListIndex--;
-      }else {
+      }else if(this.playListIndex == this.playList.length-1){
+        this.playListIndex--;
+      }else if(this.playListIndex == 0){
         this.playListIndex = this.playList.length - 1; 
       }
       audioHelper.playOne(this.playList[this.playListIndex].fullPath);
