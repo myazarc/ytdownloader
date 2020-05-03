@@ -8,6 +8,7 @@
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
     "build:win": "node .electron-vue/build.js && electron-builder -w",
+    "build:linux": "node .electron-vue/build.js && electron-builder -l",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -48,11 +49,16 @@
     },
     "win": {
       "icon": "build/icons/icon.ico",
-      "target":["nsis"]
+      "target": [
+        "nsis"
+      ]
     },
     "linux": {
       "icon": "build/icons",
-      "target": ["deb", "AppImage"]
+      "target": [
+        "deb",
+        "AppImage"
+      ]
     }
   },
   "dependencies": {
@@ -60,20 +66,17 @@
     "@fortawesome/free-solid-svg-icons": "^5.3.1",
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "dataurl": "^0.1.0",
-    "electron-notify": "^0.1.0",
-    "ffmpeg-binaries": "^4.0.0",
+    "electron-notify": "https://github.com/myazarc/electron-notify",
+    "ffmpeg-static": "^4.2.0",
     "fluent-ffmpeg": "^2.1.2",
-    "i": "^0.3.6",
-    "install": "^0.12.1",
     "nedb": "^1.8.0",
-    "npm": "^6.4.1",
     "vue": "^2.5.16",
     "vue-context-menu": "^2.0.6",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vue-slider-component": "^2.7.7",
     "vuex": "^3.0.1",
-    "ytdl-core": "^0.25.2"
+    "ytdl-core": "2.1.1"
   },
   "devDependencies": {
     "ajv": "^6.5.0",
