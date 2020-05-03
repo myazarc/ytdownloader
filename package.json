@@ -56,8 +56,7 @@
     "linux": {
       "icon": "build/icons",
       "target": [
-        "deb",
-        "AppImage"
+        "deb"
       ]
     }
   },

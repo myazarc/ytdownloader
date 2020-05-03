@@ -134,8 +134,12 @@ export default {
             });
             self.list[itemIndex].progressShow = true;
             let proc = new ffmpeg({ source: output });
-
-            proc.setFfmpegPath(ffmpegPath);
+            console.log(
+              ffmpegPath.toString().replace("app.asar", "app.asar.unpacked")
+            );
+            proc.setFfmpegPath(
+              ffmpegPath.toString().replace("app.asar", "app.asar.unpacked")
+            );
             /*
               if(process.env.NODE_ENV === 'production'){
                 const ffPath=__dirname.replace('app.asar/dist/electron','app.asar.unpacked/node_modules/ffmpeg-binaries/bin/ffmpeg')
