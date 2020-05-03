@@ -81,6 +81,9 @@ import audioHelper from '../../main/libs/audioHelper.js';
       openSettings(){
         this.$electron.remote.getCurrentWindow().toggleDevTools();
       },
+      pasteData(){
+        document.execCommand('paste');
+      },
       download(){
         
         ytHelper.getInfo(this.url).then((info) => {
@@ -102,6 +105,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
 
           let itemIndex=this.list.length - 1;
           ytHelper.download(this.url,output).then((res) =>{
+            this.$eNotify.notify({ title: this.$eNotify.messages.getLocale('START_DOWNLOAD'), text: info.title });
             this.list[itemIndex].progressShow=true;
             let totalSize = res.headers['content-length'];
             let dataRead = 0;
@@ -113,7 +117,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
             });
             res.on('end', function() {
               self.list[itemIndex].progressShow = false;
-
+              self.$eNotify.notify({ title: self.$eNotify.messages.getLocale('START_CONVERT'), text: info.title });
               self.list[itemIndex].progressShow=true;
               let proc = new ffmpeg({source:output});
 
@@ -129,6 +133,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
                 self.list[itemIndex].progressPercent = progress.percent.toFixed(2);
               })
               .on('end', () => {
+                self.$eNotify.notify({ title: self.$eNotify.messages.getLocale('COMPLETE_CONVERT'), text: info.title });
                 self.list[itemIndex].progressShow=false;
                 fs.unlinkSync(output);
               });
@@ -148,7 +153,8 @@ import audioHelper from '../../main/libs/audioHelper.js';
       <div class="title noselect">YT.Downloader</div>
     </header>
     <div class="form-area">
-      <input type="text" name="" v-model="url" class="url" placeholder="Paste Link">
+      <input type="text" name="" v-model="url" class="url" placeholder="Paste Link" 
+      @contextmenu.prevent="$refs.ctxMenuPaste.open($event)"/>
       <div class="button-area">
         <a class="btn fast-download" @click="download" title="Fast Download & Convert"><font-awesome-icon icon="angle-double-down" /></a>
         <a class="btn download" title="Download"><font-awesome-icon icon="download" /></a>
@@ -200,6 +206,10 @@ import audioHelper from '../../main/libs/audioHelper.js';
         <li @click="removeDisk(menuData)">Remove From Disk</li>
       </context-menu>
 
+      <context-menu id="context-menu-paste" class="noselect" ref="ctxMenuPaste">
+        <li @click="pasteData">Paste <small>(CTRL + V)</small></li>
+      </context-menu>
+
     </section>
     <music-player :info="mPlayerInfo"/>
   </div>
@@ -208,7 +218,7 @@ import audioHelper from '../../main/libs/audioHelper.js';
 <style lang="scss">
   #wrapper{position: relative;height: 100%;}
 
-  #context-menu{
+  #context-menu, #context-menu-paste{
     li{
       cursor: pointer;
       height: 20px;
