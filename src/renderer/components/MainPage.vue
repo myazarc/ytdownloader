@@ -12,7 +12,7 @@ const ffmpegPath = require("ffmpeg-static");
 import {
   appMainPath,
   appVideosPath,
-  appMusicPath,
+  appMusicPath
 } from "../../main/libs/pathHelper.js";
 import ytHelper from "../../main/libs/ytHelper.js";
 import db from "../../main/libs/dbHelper.js";
@@ -27,16 +27,14 @@ export default {
       progressPercent: 0,
       progressShow: false,
       mPlayerInfo: {},
-      menuData: null,
+      menuData: null
     };
   },
   created() {
     const self = this;
-    db.find({})
-      .limit(20)
-      .exec(function(err, docs) {
-        self.list = docs;
-      });
+    db.find({}).exec(function(err, docs) {
+      self.list = docs;
+    });
   },
   methods: {
     onCtxOpen(item) {
@@ -55,11 +53,11 @@ export default {
           buttons: ["Ok, Remove"],
           title: "File Not Found!",
           message:
-            "The file could not be found in the location on the disk. You may have deleted or moved it. Removing it from the list.",
+            "The file could not be found in the location on the disk. You may have deleted or moved it. Removing it from the list."
         });
 
         let currIndex = this.list.findIndex(
-          (item) => item.video_id == data.video_id
+          item => item.video_id == data.video_id
         );
         this.list.splice(currIndex, 1);
         this.removeList(data);
@@ -77,10 +75,10 @@ export default {
     },
     removeList(data) {
       db.remove({
-        video_id: data.video_id,
+        video_id: data.video_id
       });
       const removedIndex = this.list.findIndex(
-        (item) => item.video_id == data.video_id
+        item => item.video_id == data.video_id
       );
       this.list.splice(removedIndex, 1);
     },
@@ -95,7 +93,7 @@ export default {
       document.execCommand("paste");
     },
     download() {
-      ytHelper.getInfo(this.url).then((info) => {
+      ytHelper.getInfo(this.url).then(info => {
         let output = path.resolve(appVideosPath, info.title + ".mp4");
         let outputMp3 = path.resolve(appMusicPath, info.title + ".mp3");
         info.fullPath = outputMp3;
@@ -104,7 +102,7 @@ export default {
           title: info.title,
           thumbnail_url: info.thumbnail_url,
           length_seconds: info.length_seconds,
-          fullPath: outputMp3,
+          fullPath: outputMp3
         });
 
         info.progressShow = false;
@@ -112,10 +110,10 @@ export default {
         this.list.push(info);
 
         let itemIndex = this.list.length - 1;
-        ytHelper.download(this.url, output).then((res) => {
+        ytHelper.download(this.url, output).then(res => {
           this.$eNotify.notify({
             title: this.$eNotify.messages.getLocale("START_DOWNLOAD"),
-            text: info.title,
+            text: info.title
           });
           this.list[itemIndex].progressShow = true;
           let totalSize = res.headers["content-length"];
@@ -130,23 +128,15 @@ export default {
             self.list[itemIndex].progressShow = false;
             self.$eNotify.notify({
               title: self.$eNotify.messages.getLocale("START_CONVERT"),
-              text: info.title,
+              text: info.title
             });
             self.list[itemIndex].progressShow = true;
             let proc = new ffmpeg({ source: output });
-            console.log(
-              ffmpegPath.toString().replace("app.asar", "app.asar.unpacked")
-            );
+
             proc.setFfmpegPath(
               ffmpegPath.toString().replace("app.asar", "app.asar.unpacked")
             );
-            /*
-              if(process.env.NODE_ENV === 'production'){
-                const ffPath=__dirname.replace('app.asar/dist/electron','app.asar.unpacked/node_modules/ffmpeg-binaries/bin/ffmpeg')
-                proc.setFfmpegPath(ffmpeg);
-              }else {
-                proc.setFfmpegPath('./node_modules/ffmpeg-binaries/bin/ffmpeg');
-              }*/
+
             proc
               .toFormat("mp3")
               .saveToFile(outputMp3)
@@ -158,7 +148,7 @@ export default {
               .on("end", () => {
                 self.$eNotify.notify({
                   title: self.$eNotify.messages.getLocale("COMPLETE_CONVERT"),
-                  text: info.title,
+                  text: info.title
                 });
                 self.list[itemIndex].progressShow = false;
                 fs.unlinkSync(output);
@@ -166,8 +156,8 @@ export default {
           });
         });
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -186,11 +176,7 @@ export default {
         @contextmenu.prevent="$refs.ctxMenuPaste.open($event)"
       />
       <div class="button-area">
-        <a
-          class="btn fast-download"
-          @click="download"
-          title="Fast Download & Convert"
-        >
+        <a class="btn fast-download" @click="download" title="Fast Download & Convert">
           <font-awesome-icon icon="angle-double-down" />
         </a>
         <a class="btn download" title="Download">
@@ -226,9 +212,7 @@ export default {
               <div
                 class="progress"
                 :style="{ width: item.progressPercent + '%' }"
-              >
-                {{ item.progressPercent + "%" }}
-              </div>
+              >{{ item.progressPercent + "%" }}</div>
             </div>
           </div>
 
