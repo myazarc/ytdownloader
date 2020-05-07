@@ -35,6 +35,14 @@ export default {
     db.find({}).exec(function(err, docs) {
       self.list = docs;
     });
+
+    window.addEventListener("keyup", event => {
+      event = event || window.event;
+
+      if (event.ctrlKey && event.keyCode == 86) {
+        this.pasteData();
+      }
+    });
   },
   methods: {
     onCtxOpen(item) {
@@ -90,7 +98,8 @@ export default {
       this.$electron.remote.getCurrentWindow().toggleDevTools();
     },
     pasteData() {
-      document.execCommand("paste");
+      const text = this.$electron.clipboard.readText();
+      this.url = text;
     },
     download() {
       ytHelper.getInfo(this.url).then(info => {
@@ -100,11 +109,11 @@ export default {
         db.insert({
           video_id: info.video_id,
           title: info.title,
-          thumbnail_url: info.thumbnail_url,
+          thumbnail_url: `https://img.youtube.com/vi/${info.video_id}/mqdefault.jpg`,
           length_seconds: info.length_seconds,
           fullPath: outputMp3
         });
-
+        info.thumbnail_url = `https://img.youtube.com/vi/${info.video_id}/mqdefault.jpg`;
         info.progressShow = false;
         info.progressPercent = 0;
         this.list.push(info);
