@@ -5,6 +5,7 @@ const ytdl = require("ytdl-core");
 import contextMenu from "vue-context-menu";
 
 import MusicPlayer from "./MusicPlayer";
+import Modal from "./Modal";
 
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
@@ -19,15 +20,16 @@ import db from "../../main/libs/dbHelper.js";
 import audioHelper from "../../main/libs/audioHelper.js";
 
 export default {
-  components: { MusicPlayer, contextMenu },
+  components: { MusicPlayer, contextMenu, Modal },
   data() {
     return {
-      url: "",
+      url: "https://www.youtube.com/watch?v=gOT7AggZgMk",
       list: [],
       progressPercent: 0,
       progressShow: false,
       mPlayerInfo: {},
-      menuData: null
+      menuData: null,
+      parsingModal: false
     };
   },
   created() {
@@ -36,7 +38,7 @@ export default {
       self.list = docs;
     });
 
-    window.addEventListener("keyup", event => {
+    window.addEventListener("keydown", event => {
       event = event || window.event;
 
       if (event.ctrlKey && event.keyCode == 86) {
@@ -102,18 +104,19 @@ export default {
       this.url = text;
     },
     download() {
+      this.parsingModal = true;
       ytHelper.getInfo(this.url).then(info => {
+        this.parsingModal = false;
+
         let output = path.resolve(appVideosPath, info.title + ".mp4");
         let outputMp3 = path.resolve(appMusicPath, info.title + ".mp3");
         info.fullPath = outputMp3;
         db.insert({
           video_id: info.video_id,
           title: info.title,
-          thumbnail_url: `https://img.youtube.com/vi/${info.video_id}/mqdefault.jpg`,
           length_seconds: info.length_seconds,
           fullPath: outputMp3
         });
-        info.thumbnail_url = `https://img.youtube.com/vi/${info.video_id}/mqdefault.jpg`;
         info.progressShow = false;
         info.progressPercent = 0;
         this.list.push(info);
@@ -172,9 +175,17 @@ export default {
 
 <template>
   <div id="wrapper">
+    <modal v-model="parsingModal" :header-show="false" :footer-show="false">
+      <div style="font-size:14px;text-align:center; width:100%">
+        <font-awesome-icon size="2x" icon="spinner" spin />
+        <br />
+        <br />Ayrıştırılıyor
+      </div>
+    </modal>
     <header>
       <div class="title noselect">YT.Downloader</div>
     </header>
+
     <div class="form-area">
       <input
         type="text"
@@ -209,7 +220,7 @@ export default {
       >
         <div class="list-item">
           <div class="item-img">
-            <img :src="item.thumbnail_url" alt />
+            <img :src="`https://img.youtube.com/vi/${item.video_id}/mqdefault.jpg`" alt />
           </div>
 
           <div class="item-info">
