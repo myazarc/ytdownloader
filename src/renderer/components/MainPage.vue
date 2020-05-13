@@ -25,7 +25,7 @@ export default {
     return {
       // test variable
       //url: "https://www.youtube.com/watch?v=gOT7AggZgMk",
-      url: "https://www.youtube.com/watch?v=gOT7AggZgMk",
+      url: null,
       list: [],
       progressPercent: 0,
       progressShow: false,
