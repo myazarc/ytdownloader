@@ -23,13 +23,18 @@ export default {
   components: { MusicPlayer, contextMenu, Modal },
   data() {
     return {
+      // test variable
+      //url: "https://www.youtube.com/watch?v=gOT7AggZgMk",
       url: "https://www.youtube.com/watch?v=gOT7AggZgMk",
       list: [],
       progressPercent: 0,
       progressShow: false,
       mPlayerInfo: {},
       menuData: null,
-      parsingModal: false
+      parsingModal: false,
+
+      errorText: null,
+      errorModal: false
     };
   },
   created() {
@@ -181,6 +186,9 @@ export default {
         <br />
         <br />Ayrıştırılıyor
       </div>
+    </modal>
+    <modal v-model="errorModal" :ok-button-show="false" cancel-button-text="Ok" header-title="Hata">
+      <div style="font-size:14px;text-align:center; width:100%">{{errorText}}</div>
     </modal>
     <header>
       <div class="title noselect">YT.Downloader</div>

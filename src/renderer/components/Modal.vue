@@ -2,8 +2,8 @@
   <div class="modal-overlay" v-show="vModelShow">
     <div class="modal">
       <div class="modal-header" v-if="headerShow">
-        Title
-        <span class="modal-header-close" v-if="closeable">&times;</span>
+        {{headerTitle}}
+        <span class="modal-header-close" @click="closeModal" v-if="closeable">&times;</span>
       </div>
       <div class="modal-container">
         <slot></slot>
@@ -46,7 +46,10 @@ export default {
       type: Boolean,
       default: () => true
     },
-
+    headerTitle: {
+      type: String,
+      default: () => "Title"
+    },
     closeable: {
       type: Boolean,
       default: () => true
@@ -86,6 +89,7 @@ export default {
       this.okButtonAction();
     },
     cancelButtonClick() {
+      this.closeModal();
       this.cancelButtonAction();
     },
 
