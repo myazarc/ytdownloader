@@ -6,6 +6,7 @@ import contextMenu from "vue-context-menu";
 
 import MusicPlayer from "./MusicPlayer";
 import Modal from "./Modal";
+import ListView from "./ListView";
 
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
@@ -20,7 +21,7 @@ import db from "../../main/libs/dbHelper.js";
 import audioHelper from "../../main/libs/audioHelper.js";
 
 export default {
-  components: { MusicPlayer, contextMenu, Modal },
+  components: { MusicPlayer, contextMenu, Modal,ListView },
   data() {
     return {
       // test variable
@@ -34,7 +35,12 @@ export default {
       parsingModal: false,
 
       errorText: null,
-      errorModal: false
+      errorModal: false,
+
+      detailedDownloadModal:false,
+      detailedDownloadData: {
+        formats:[]
+      },
     };
   },
   created() {
@@ -52,6 +58,9 @@ export default {
     });
   },
   methods: {
+    toString(data){
+      return JSON.stringify(data);
+    },
     onCtxOpen(item) {
       this.menuData = item;
     },
@@ -112,7 +121,12 @@ export default {
       this.parsingModal = true;
       ytHelper.getInfo(this.url).then(info => {
         this.parsingModal = false;
-
+        /*
+        this.detailedDownloadModal=true;
+        this.detailedDownloadData=info;
+        console.log(info);
+        return;
+        */
         let output = path.resolve(appVideosPath, info.title + ".mp4");
         let outputMp3 = path.resolve(appMusicPath, info.title + ".mp3");
         info.fullPath = outputMp3;
@@ -189,6 +203,18 @@ export default {
     </modal>
     <modal v-model="errorModal" :ok-button-show="false" cancel-button-text="Ok" header-title="Hata">
       <div style="font-size:14px;text-align:center; width:100%">{{errorText}}</div>
+    </modal>
+    <modal v-model="detailedDownloadModal">
+      <div class="detailedDownloadContainer" style="width:100%">
+        <div class="detailedDownloadHeader">
+          <div class="detailedDownloadHeader-img"></div>
+          <div class="detailedDownloadHeader-title"></div>
+        </div>
+        <div class="detailedDownloadData" style="max-height:80%">
+          <list-view :data="detailedDownloadData"/>
+          
+        </div>
+      </div>
     </modal>
     <header>
       <div class="title noselect">YT.Downloader</div>
